@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Diwali</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            overflow: hidden; /* Prevent scrollbars */
+        }
+
+        /* Background Animation */
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(255, 183, 77, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
+            z-index: -1;
+        }
+
+        /* Fireworks */
+        .firework {
+            position: absolute;
+            background: #ffeb3b;
+            border-radius: 50%;
+            animation: explode 0.8s ease-out forwards;
+        }
+        @keyframes explode {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(3); }
+        }
+
+        /* Garland Lights */
+        .light {
+            position: absolute;
+            width: 12px; /* Increased size */
+            height: 12px; /* Increased size */
+            border-radius: 50%;
+            animation: twinkle 1.5s infinite; /* Faster twinkle animation */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.6); /* Soft glow effect */
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; transform: scale(1.2); } /* Scale effect for twinkling */
+        }
+
+        /* Falling Diya Emoji */
+        .diya {
+            position: absolute;
+            font-size: 40px; /* Size of the diya emoji */
+            animation: fall 4s linear infinite; /* Falling animation */
+            opacity: 0.9;
+        }
+
+        @keyframes fall {
+            0% { top: -50px; opacity: 1; }
+            100% { top: 100vh; opacity: 0; }
+        }
+
+        /* Firecracker Spark */
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 20px;
+            background-color: #fcd34d; /* Base color */
+            transform-origin: bottom;
+            animation: sparkle 0.5s ease-out infinite alternate;
+            border-radius: 5px; /* Add some rounding to the corners */
+            box-shadow: 0 0 10px rgba(252, 211, 77, 0.8); /* Glow effect */
+        }
+        @keyframes sparkle {
+            0% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scaleY(0.1) translateY(-10px); /* Slight upward movement */
+                opacity: 0; /* Fade out */
+            }
+        }
+
+        /* Firecracker Burst */
+        .burst {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 223, 186, 0.8);
+            animation: burst 0.4s forwards;
+        }
+        @keyframes burst {
+            0% {
+                width: 10px;
+                height: 10px;
+                opacity: 1;
+            }
+            100% {
+                width: 50px;
+                height: 50px;
+                opacity: 0;
+            }
+        }
+
+        /* Falling Sparks */
+        .falling-spark {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ff4d4d; /* Spark color */
+            animation: fall-spark 1s forwards; /* Falling animation */
+        }
+        @keyframes fall-spark {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100px); /* Adjust falling distance */
+                opacity: 0; /* Fade out */
+            }
+        }
+
+        /* Stars in the Background */
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: twinkle 1.5s infinite; /* Twinkle effect for stars */
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen bg-gradient-to-br from-purple-700 to-orange-400 relative overflow-hidden">
+
+    <div class="background"></div> <!-- Background Animation -->
+
+    <!-- Garland Lights -->
+    <div id="lights-container" class="absolute top-0 left-0 w-full h-20 flex justify-around"></div>
+
+    <!-- Main Greeting Content -->
+    <div class="text-center text-white relative z-10">
+        <h1 class="text-5xl font-bold mb-2" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">Happy Diwali 2024!</h1>
+        <p class="text-lg" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">“May the lights of Diwali guide you on the path of happiness and prosperity.”</p>
+        <p class="text-lg font-semibold mt-2" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">Wishing you a joyful and blessed Diwali filled with love, laughter, and togetherness.</p>
+        <p class="text-lg font-semibold mt-2" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">With love, Shubham</p>
+        <button onclick="startCelebration()" class="mt-6 px-6 py-2 bg-yellow-500 text-purple-800 font-bold rounded-full hover:bg-yellow-600 transition-all">
+            Celebrate
+        </button>
+    </div>
+
+
+
+    <!-- Fireworks and Firecrackers Containers -->
+    <div id="fireworks-container"></div>
+    <div id="firecrackers-container"></div>
+
+    <!-- Stars Container -->
+    <div id="stars-container"></div>
+
+    <script>
+        // Function to create fireworks
+        function createFirework(x, y) {
+            const firework = document.createElement("div");
+            firework.classList.add("firework");
+            firework.style.width = firework.style.height = Math.random() * 10 + 5 + "px";
+            firework.style.left = `${x}px`;
+            firework.style.top = `${y}px`;
+            firework.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`; // Random colors
+            document.getElementById("fireworks-container").appendChild(firework);
+            setTimeout(() => firework.remove(), 800);
+        }
+
+        // Function to create a falling diya emoji
+        function createDiya() {
+            const diya = document.createElement("div");
+            diya.classList.add("diya");
+            diya.textContent = "🪔"; // Diya emoji
+            diya.style.left = Math.random() * 100 + "vw"; // Random horizontal position
+            diya.style.animationDuration = `${Math.random() * 2 + 2}s`; // Random falling speed
+            document.getElementById("firecrackers-container").appendChild(diya);
+            setTimeout(() => diya.remove(), 4000); // Remove after falling
+        }
+
+        // Create twinkling stars
+        function createStars() {
+            const starsContainer = document.getElementById("stars-container");
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement("div");
+                star.classList.add("star");
+                const size = Math.random() * 4 + 2; // Random size between 2px and 6px
+                star.style.width = star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}vw`; // Random horizontal position
+                star.style.top = `${Math.random() * 100}vh`; // Random vertical position
+                star.style.opacity = Math.random(); // Random opacity for twinkling effect
+                star.style.animationDuration = `${Math.random() * 2 + 1}s`; // Random twinkling speed
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Garland lights effect
+        function createGarlandLights() {
+            const lightsContainer = document.getElementById("lights-container");
+            const colors = ['#fffa65', '#ff4d4d', '#34d399', '#60a5fa', '#a5b4fc', '#fbbf24', '#fca5a1']; // Color array
+            for (let i = 0; i < 20; i++) {
+                const light = document.createElement("div");
+                light.classList.add("light");
+                light.style.left = `${i * 5}%`;
+                light.style.top = `${Math.sin(i * 0.5) * 10 + 20}px`;
+                light.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; // Random color from the array
+                lightsContainer.appendChild(light);
+            }
+        }
+
+        // Firecracker spark animation
+        function createFirecracker(x) {
+            const y = Math.random() * window.innerHeight;
+            const spark = document.createElement("div");
+            spark.classList.add("spark");
+            spark.style.left = `${x}px`;
+            spark.style.top = `${y}px`;
+            document.getElementById("firecrackers-container").appendChild(spark);
+            setTimeout(() => spark.remove(), 500);
+            for (let i = 0; i < 10; i++) {
+                const fallingSpark = document.createElement("div");
+                fallingSpark.classList.add("falling-spark");
+                fallingSpark.style.left = `${x + (Math.random() - 0.5) * 20}px`; // Random spread of sparks
+                fallingSpark.style.top = `${y}px`;
+                fallingSpark.style.animationDuration = `${Math.random() * 1 + 0.5}s`; // Random falling speed
+                document.body.appendChild(fallingSpark);
+                setTimeout(() => fallingSpark.remove(), 1000); // Remove spark after animation
+            }
+        }
+
+        // Function to start the celebration
+        function startCelebration() {
+            createGarlandLights(); // Create garland lights
+            createStars(); // Create stars
+            setInterval(() => createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight), 300); // Fireworks
+            setInterval(createDiya, 2000); // Falling diyas every 2 seconds
+            setInterval(() => createFirecracker(Math.random() * window.innerWidth), 1000); // Firecrackers
+        }
+
+        // Adjust container size on resize
+        window.addEventListener('resize', () => {
+            const fireworksContainer = document.getElementById("fireworks-container");
+            const firecrackersContainer = document.getElementById("firecrackers-container");
+            fireworksContainer.style.width = `${window.innerWidth}px`;
+            fireworksContainer.style.height = `${window.innerHeight}px`;
+            firecrackersContainer.style.width = `${window.innerWidth}px`;
+            firecrackersContainer.style.height = `${window.innerHeight}px`;
+        });
+    </script>
+</body>
+</html>
